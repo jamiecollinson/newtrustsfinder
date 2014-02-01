@@ -1,5 +1,8 @@
 Browser = require 'zombie'
-browser = new Browser( debug: true )
+browser = new Browser( 
+  debug: false
+  runScripts: false
+)
 
 browser.visit 'http://apps.charitycommission.gov.uk/ShowCharity/RegisterOfCharities/AdvancedSearch.aspx'
   .then ->
@@ -9,4 +12,10 @@ browser.visit 'http://apps.charitycommission.gov.uk/ShowCharity/RegisterOfCharit
   .then ->
     results = browser.queryAll 'td:nth-child(1) a'
     for result in results
-      console.log result.innerHTML, result.href
+      getCharityDetails(browser, result.href)
+      
+      
+getCharityDetails = (browser, url) ->
+  browser.visit url
+    .then ->
+      console.log browser.text('#ctl00_charityStatus_spnCharityName')
